@@ -15,7 +15,7 @@ function register(req, res) {
                     res.send(data);
                 })
                 .catch(function(err) {
-                    res.send({success: false, msg: err});
+                    res.status(400).send(err);
                 });
 }
 

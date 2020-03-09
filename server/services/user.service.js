@@ -17,22 +17,27 @@ function authenticate(username, password) {
     var deferred = Q.defer();
     User.findOne({ email: username }, function (err, user) {
         if (err) deferred.reject(err.name + ': ' + err.message);
-        user.comparePassword(password, function(err, isMatch) {
-            if (err) deferred.reject({ success: false, message: err });
-            if(isMatch){
-                var token = jwt.sign({_id:user._id,role:user.role},secret);
-                //var token = jwt.sign({ username: user.name, email: user.email }, secret, { expiresIn: '24h' }); //logged in given user token
-                deferred.resolve({
-                    _id: user._id,
-                    name: user.name,
-                    email: user.email,
-                    role: user.role,
-                    token: token
-                });
-            }else{
-                deferred.reject({ success: false, message: 'Could not authenticate password' }); 
-            }
-        });
+        if(user){
+            user.comparePassword(password, function(err, isMatch) {
+                if (err) deferred.reject({ success: false, message: err });
+                if(isMatch){
+                    var token = jwt.sign({_id:user._id,role:user.role},secret);
+                    //var token = jwt.sign({ username: user.name, email: user.email }, secret, { expiresIn: '24h' }); //logged in given user token
+                    deferred.resolve({
+                        _id: user._id,
+                        name: user.name,
+                        email: user.email,
+                        role: user.role,
+                        token: token
+                    });
+                }else{
+                    deferred.reject({ success: false, message: 'Could not authenticate password' }); 
+                }
+            });
+        }else{
+            deferred.reject({ success: false, message: 'User not found' }); 
+        }
+       
     });
 
     return deferred.promise;
