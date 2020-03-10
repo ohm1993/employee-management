@@ -32,6 +32,19 @@ export class UserService {
         return this.http.post(appConfig.apiUrl + '/users/register', user);
     }
 
+    sendMail(name: string){
+        const user = JSON.parse(localStorage.getItem('currentUser'));
+        const currentUser = JSON.parse(user._body);
+        let headers = new Headers;
+        var obj = {};
+        obj['opname'] = name;
+        obj['email'] = currentUser.email;
+        headers.append('Content-Type', 'application/json');
+        headers.append('x-auth-header',currentUser.token)
+        let options = new RequestOptions({headers: headers});
+        return this.http.post(appConfig.apiUrl + '/users/sendemail', obj, options); 
+    }
+
     update(user: User) {
         const user1 = JSON.parse(localStorage.getItem('currentUser'));
         const currentUser = JSON.parse(user1._body);
@@ -43,7 +56,13 @@ export class UserService {
     }
 
     delete(_id: string) {
-        return this.http.delete(appConfig.apiUrl + '/users/' + _id);
+        const user = JSON.parse(localStorage.getItem('currentUser'));
+        const currentUser = JSON.parse(user._body);
+        let headers = new Headers;
+        headers.append('Content-Type', 'application/json');
+        headers.append('x-auth-header',currentUser.token)
+        let options = new RequestOptions({headers: headers});
+        return this.http.delete(appConfig.apiUrl + '/users/' + _id, options);
     }
     public extractData(res: Response) {
         let body = res.json();

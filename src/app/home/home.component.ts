@@ -9,11 +9,11 @@ import { AlertService, UserService } from '../_services/index';
 })
 export class HomeComponent implements OnInit { 
   users : User[];
-  //user: User;
+  searchString: string;
   model: any = {};
-  jQuery:any;
 
   public user = {
+    _id: '',
     name: '',
     email: '',
     password : '',
@@ -33,41 +33,75 @@ export class HomeComponent implements OnInit {
     this.userService.getAll().subscribe(
         res => {
           this.users = res;
-          console.log("res value is",res);
         }
      );
   } 
+  
+  sendEmail(opname: string){
+    this.userService.sendMail(opname)
+          .subscribe(
+          data => {
+            this.alertService.success('Mail Send successful', true);
+          },
+          error => {
+              this.alertService.error(error);
+          });
+  }
   editUser(UserId: string) {  
       this.userService.getById(UserId)
       .subscribe(
           user => {
+            const opname = "edited";
             this.user = user;
+            this.sendEmail(opname);
           },
           error => {
               this.alertService.error(error);
           });
   }  
 
-  deleteUser(UserId: number) {  
-    alert("delete clicked");
+  deleteUser(UserId: string) {  
+    this.userService.delete(UserId)
+    .subscribe(
+        data => {
+          const opname = "deleted";
+          this.alertService.success('Deleted successfully', true);
+          this.loadLists();
+          this.sendEmail(opname);
+        },
+        error => {
+            this.alertService.error(error);
+        });
   } 
   
   addUser() {  
     this.userService.create(this.model)
       .subscribe(
           data => {
+            const opname = "add";
             this.alertService.success('Registration successful', true);
-            this.jQuery("#myModal").modal("hide");
+            this.loadLists();
+            this.sendEmail(opname);
           },
           error => {
               this.alertService.error(error);
           });
-   
   }
 
   updateUser() {
-    alert("in update ");
-    console.log("edit value is",this.user);
+    this.userService.update(this.user)
+      .subscribe(
+          data => {
+            const opname = "update";
+            this.alertService.success('Employee Updated successful', true);
+            this.sendEmail(opname);
+            this.loadLists();
+           
+          },
+          error => {
+             console.log("error is",error);
+              this.alertService.error(error);
+          });
   }
 
 }

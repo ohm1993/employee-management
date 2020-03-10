@@ -14,6 +14,7 @@ import { AppRoutingModule }  from './app-routing.module';
 import { AlertComponent } from './alert/alert.component';
 import { ShowAuthedDirective } from './shared/show-authed.directive';
 import { ProfileComponent } from './profile/profile.component';
+import { FilterPipe } from './pipe/filter.pipe';
 
 
 @NgModule({
@@ -26,7 +27,8 @@ import { ProfileComponent } from './profile/profile.component';
     AlertComponent,
     ShowAuthedDirective,
     ProfileComponent,
-    ProfileComponent
+    ProfileComponent,
+    FilterPipe
   ],
   imports: [
     BrowserModule,

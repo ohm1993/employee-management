@@ -11,6 +11,7 @@ service.getAll = getAll;
 service.update = update;
 service.delete = _delete;
 service.getById = getById;
+service.getAllAdmin = getAllAdmin;
 module.exports = service;
 
 function authenticate(username, password) {
@@ -67,6 +68,15 @@ function create(userParam) {
 function getAll(){
     var deferred = Q.defer();
     User.find({role: "employee"}).sort([['name', 1]]).exec(function (err, users) {
+        if (err) deferred.reject(err.name + ': ' + err.message);
+        deferred.resolve(users);
+    });
+    return deferred.promise;
+}
+
+function getAllAdmin(){
+    var deferred = Q.defer();
+    User.find({role: "admin"},{'_id': 0, 'email' :1 }).exec(function (err, users) {
         if (err) deferred.reject(err.name + ': ' + err.message);
         deferred.resolve(users);
     });

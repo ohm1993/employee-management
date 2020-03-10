@@ -2,7 +2,23 @@
     <div class='panel-heading'> User Management </div>  
     <div class='panel-body'>  
         <div class='table-responsive'>  
-            <div style="padding-bottom:10px"><button class="btn btn-primary" data-toggle="modal" data-target="#myModal">Add</button></div>  
+            <div style="padding-bottom:10px"><button class="btn btn-primary" data-toggle="modal" data-target="#myModal">Add</button></div> 
+            <form>
+              <div class="form-group">
+                <div class="input-group">
+                  <div class="input-group-addon">
+                    <i class="glyphicon glyphicon-search"></i>
+                  </div>
+                  <input
+                    type="text"
+                    class="form-control"
+                    name="searchString"
+                    placeholder="Type to search..."
+                    [(ngModel)]="searchString"
+                  />
+                </div>
+              </div>
+            </form> 
             <div class="alert alert-info" role="alert" *ngIf="indLoading"><img src="../../images/loading.gif" width="32" height="32" /> Loading...</div>  
             <div *ngIf='users && users.length==0' class="alert alert-info" role="alert">No record found!</div>  
             <table class='table table-striped' *ngIf='users && users.length'>  
@@ -15,11 +31,11 @@
                     </tr>  
                 </thead>  
                 <tbody>  
-                    <tr *ngFor="let user of users">  
+                    <tr *ngFor="let user of users | filter : 'name' : searchString; let i = index">  
                         <td>{{user.name}}</td>  
                         <td>{{user.email}}</td>  
                         <td>{{user.role}}</td>  
-                        <td> <button title="Edit" class="btn btn-primary" data-toggle="modal" data-target="#editModal" (click)="editUser(user._id)">Edit</button> <button title="Delete" class="btn btn-danger" (click)="deleteUser(user.AlbumId)">Delete</button> </td>  
+                        <td> <button title="Edit" class="btn btn-primary" data-toggle="modal" data-target="#editModal" (click)="editUser(user._id)">Edit</button> <button title="Delete" class="btn btn-danger" (click)="deleteUser(user._id)">Delete</button> </td>  
                     </tr>  
                 </tbody>  
             </table>  
